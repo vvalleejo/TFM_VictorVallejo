@@ -92,13 +92,15 @@ class MultivariatePatchEncoder(nn.Module):
             nn.Linear(d_model, latent_dim),
         )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, return_sequence: bool = False) -> torch.Tensor:
         """
         Args:
             x (torch.Tensor): Observations of shape (B, T, C).
+            return_sequence (bool): If True, returns (B, T, latent_dim).
+                                   If False, returns pooled (B, latent_dim).
 
         Returns:
-            torch.Tensor: Latent representation z of shape (B, latent_dim).
+            torch.Tensor: Latents of shape (B, latent_dim) or (B, T, latent_dim).
         """
         B, T, C = x.shape
 
@@ -115,10 +117,14 @@ class MultivariatePatchEncoder(nn.Module):
         # Pass through Transformer
         encoded = self.transformer(tokens)
 
-        # Readout from [CLS] token
-        z_cls = encoded[:, 0]  # (B, d_model)
-        z = self.head(z_cls)   # (B, latent_dim)
-        return z
+        if return_sequence:
+            # Return sequence latents for time steps (excluding [CLS] token): (B, T, latent_dim)
+            step_tokens = encoded[:, 1:]  # (B, T, d_model)
+            return self.head(step_tokens)  # (B, T, latent_dim)
+        else:
+            # Readout from [CLS] token
+            z_cls = encoded[:, 0]  # (B, d_model)
+            return self.head(z_cls)  # (B, latent_dim)
 
 
 class TemporalTCNEncoder(nn.Module):

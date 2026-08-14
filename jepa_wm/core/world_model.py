@@ -122,23 +122,16 @@ class LatentJEPAWorldModel(nn.Module):
         z_pred_seq = self.predictor(z_ctx, act_fut)  # (B, K, latent_dim)
 
         if obs_fut is None:
-            return z_pred_seq, None, None
+            return z_pred_seq, None, None, None
 
-        # 3. Encode future targets: (B, K, C) -> (B, K, latent_dim)
-        B, K, C = obs_fut.shape
-        # Process each target step as single-step observation
-        # obs_fut has shape (B, K, C); we expand each step into a 1-step sequence (B*K, 1, C)
-        obs_fut_flat = obs_fut.view(B * K, 1, C)
-
+        # 3. Fast parallel encoding of future targets: (B, K, C) -> (B, K, latent_dim)
         with torch.set_grad_enabled(not self.use_ema):
-            z_targets_flat = self.target_encoder(obs_fut_flat)  # (B*K, latent_dim)
-
-        z_target_seq = z_targets_flat.view(B, K, self.latent_dim)
+            z_target_seq = self.target_encoder(obs_fut, return_sequence=True)  # (B, K, latent_dim)
 
         # 4. Compute complete LeWM loss (multi-step predictive loss + SIGReg)
         loss, metrics = self.loss_fn(z_pred_seq, z_target_seq, z_ctx)
 
-        return z_pred_seq, z_target_seq, metrics
+        return z_pred_seq, z_target_seq, loss, metrics
 
     @torch.no_grad()
     def update_ema_target(self) -> None:

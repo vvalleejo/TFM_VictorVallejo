@@ -86,7 +86,7 @@ def test_latent_jepa_world_model_end_to_end():
     act_fut = torch.randn(B, K, d_a)
     obs_fut = torch.randn(B, K, C)
 
-    z_pred_seq, z_target_seq, metrics = model(obs_ctx, act_fut, obs_fut)
+    z_pred_seq, z_target_seq, loss, metrics = model(obs_ctx, act_fut, obs_fut)
 
     assert z_pred_seq.shape == (B, K, latent_dim)
     assert z_target_seq.shape == (B, K, latent_dim)

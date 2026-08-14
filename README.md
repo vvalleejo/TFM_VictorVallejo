@@ -4,8 +4,8 @@
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Master's Thesis in Mathematical Engineering (TFM)**  
-> **Author:** Víctor Vallejo  
+> **Master's Thesis in Mathematical Engineering and Computer Science (TFM)**
+> **Author:** Víctor Vallejo
 > **Topic:** Joint-Embedding Predictive Architectures (JEPA) as Latent World Models for Continuous & Chaotic Multivariate Dynamical Systems.
 
 ---
@@ -15,6 +15,7 @@
 Traditional World Models (such as Dreamer or PlaNet) rely heavily on **generative observation reconstruction** via Autoencoders, VAEs, or Diffusion Models. However, when applied to complex physical systems, sensor networks, or industrial telemetry, raw observations contain substantial high-entropy stochastic noise and non-predictable nuisance variables. Reconstructive objectives allocate disproportionate network capacity to model these irrelevant details, leading to suboptimal latent dynamics.
 
 This work implements and studies **Joint-Embedding Predictive Architectures (JEPA)** as Latent World Models for multivariate time series and continuous dynamical systems. We leverage:
+
 1. **Self-Supervised Latent Dynamics Prediction** ($P_\phi(z_t, a_{t:t+k}) \to \hat{z}_{t+k}$) without observation decoding.
 2. **Sketched Isotropic Gaussian Regularization (SIGReg)** based on the Cramér-Wold projection device and exact closed-form 1D Epps-Pulley test statistic to prevent representation collapse.
 3. **Linear Identifiability & Physical Recovery**: Theoretical and empirical validation that LeJEPA recovers ground-truth physical state variables up to an orthogonal rotation ($h(s) = Qs$).
@@ -98,4 +99,5 @@ pytest tests/
 ---
 
 ## 📚 Mathematical Documentation
+
 See [docs/theoretical_foundations.md](docs/theoretical_foundations.md) and [docs/thesis_blueprint.md](docs/thesis_blueprint.md) for full mathematical derivations, proofs of linear identifiability, and the complete Master's Thesis chapter plan.

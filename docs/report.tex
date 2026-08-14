@@ -143,6 +143,12 @@ Por tanto, la planificación latente $J(a_{0:H-1}) = \min \sum \|z_t - z_{\text{
 % --- Section 3: Framework Architecture ---
 \section{Arquitectura del Framework de Software (\texttt{jepa\_wm})}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{results/jepa_wm_architecture.jpg}
+    \caption{\textbf{Arquitectura del Modelo de Mundo Latente JEPA (\texttt{LatentJEPAWorldModel}):} Flujo de información y componentes matemáticos. (1) El \textit{Multivariate Patch Transformer Context Encoder} $E_\theta$ mapea ventanas multicanal $x_{\le t}$ al estado latente $z_t$. (2) El \textit{Action-Conditioned Latent Predictor} $P_\phi$ proyecta dinámicas multi-paso $\hat{z}_{t+1:t+K}$ condicionadas por acciones $a_t$. (3) El \textit{Target Sequence Encoder} $E_{\bar{\theta}}$ codifica observaciones futuras de referencia para evaluar la pérdida $\mathcal{L}_{pred}$. (4) El nodo de proyección Cramér-Wold calcula el regularizador analítico anti-colapso $\text{SIGReg}(Z)$. (5) El módulo de planificación latente MPC (CEM / MPPI) optimiza acciones en tiempo real directamente en $\mathcal{Z}$ sin requerir decodificador de observaciones.}
+\end{figure}
+
 El paquete de software \texttt{jepa\_wm} ha sido estructurado en submódulos modulares y desacoplados:
 
 \begin{table}[H]
